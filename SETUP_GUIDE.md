@@ -84,7 +84,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 2. **Configure Pipeline**:
    - **Definition**: Pipeline script from SCM
    - **SCM**: Git
-   - **Repository URL**: `https://github.com/yourusername/jenkins-ci-cd-lab.git`
+   - **Repository URL**: `https://github.com/mayusuf/jenkins-ci-cd-lab.git`
    - **Credentials**: Add your GitHub credentials
    - **Branch Specifier**: `*/main` or `*/master`
    - **Script Path**: `Jenkinsfile`
@@ -99,7 +99,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 # Create GitHub repository
 # Then push your code:
 
-git remote add origin https://github.com/yourusername/jenkins-ci-cd-lab.git
+git remote add origin https://github.com/mayusuf/jenkins-ci-cd-lab.git
 git branch -M main
 git push -u origin main
 ```

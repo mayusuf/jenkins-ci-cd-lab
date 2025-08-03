@@ -11,7 +11,7 @@ setup(
     description='A simple calculator project for Jenkins CI/CD demonstration',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/jenkins-ci-cd-lab',
+    url='https://github.com/mayusuf/jenkins-ci-cd-lab',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 3 - Alpha',

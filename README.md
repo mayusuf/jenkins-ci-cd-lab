@@ -21,7 +21,7 @@ A demonstration project showcasing Jenkins CI/CD pipeline with a simple calculat
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mayusuf/jenkins-ci-cd-lab.git
    cd jenkins-ci-cd-lab
    ```
 
