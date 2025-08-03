@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .operation-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .operation-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .operation-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #d63031;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>🧮 Calculator</h1>
+            <p>Simple arithmetic operations</p>
+        </div>
+
+        <form id="calculatorForm">
+            <div class="form-group">
+                <label for="number1">First Number:</label>
+                <input type="number" id="number1" name="number1" step="any" required>
+            </div>
+
+            <div class="form-group">
+                <label for="number2">Second Number:</label>
+                <input type="number" id="number2" name="number2" step="any" required>
+            </div>
+
+            <div class="operation-buttons">
+                <button type="button" class="operation-btn" data-operation="add">➕ Add</button>
+                <button type="button" class="operation-btn" data-operation="subtract">➖ Subtract</button>
+                <button type="button" class="operation-btn" data-operation="multiply">✖️ Multiply</button>
+                <button type="button" class="operation-btn" data-operation="divide">➗ Divide</button>
+            </div>
+
+            <button type="submit" class="calculate-btn">Calculate</button>
+        </form>
+
+        <div class="result" id="result">
+            <h3>Result:</h3>
+            <div class="result-value" id="resultValue"></div>
+        </div>
+
+        <div class="error" id="error"></div>
+    </div>
+
+    <script>
+        let selectedOperation = 'add';
+
+        // Handle operation button clicks
+        document.querySelectorAll('.operation-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.operation-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                selectedOperation = this.dataset.operation;
+            });
+        });
+
+        // Set default active button
+        document.querySelector('[data-operation="add"]').classList.add('active');
+
+        // Handle form submission
+        document.getElementById('calculatorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const number1 = parseFloat(document.getElementById('number1').value);
+            const number2 = parseFloat(document.getElementById('number2').value);
+            
+            // Hide previous results
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+            
+            // Show loading
+            document.getElementById('resultValue').innerHTML = '<div class="loading">Calculating...</div>';
+            document.getElementById('result').classList.add('show');
+            
+            try {
+                const response = await fetch('/api/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        operation: selectedOperation,
+                        a: number1,
+                        b: number2
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('resultValue').textContent = data.result;
+                    document.getElementById('result').classList.add('show');
+                } else {
+                    document.getElementById('error').textContent = data.error;
+                    document.getElementById('error').classList.add('show');
+                    document.getElementById('result').classList.remove('show');
+                }
+            } catch (error) {
+                document.getElementById('error').textContent = 'An error occurred while calculating.';
+                document.getElementById('error').classList.add('show');
+                document.getElementById('result').classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html> 

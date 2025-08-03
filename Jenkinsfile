@@ -4,6 +4,8 @@ pipeline {
     environment {
         // Set Python version (adjust as needed)
         PYTHON = 'python3'
+        // Add deployment environment variables
+        DEPLOY_ENV = 'production'
     }
     
     stages {
@@ -47,7 +49,7 @@ pipeline {
                 // Run tests with coverage
                 sh '''
                     . venv/bin/activate
-                    python -m pytest tests/ --cov=calculator --cov-report=xml --cov-report=term
+                    python -m pytest tests/ --cov=calculator --cov-report=xml --cov-report=html --cov-report=term
                 '''
             }
             
@@ -82,6 +84,50 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/*', allowEmptyArchive: true
             }
         }
+        
+        stage('Security Scan') {
+            steps {
+                // Run security scan (optional)
+                sh '''
+                    . venv/bin/activate
+                    pip install safety
+                    safety check --json --output safety-report.json || true
+                '''
+            }
+            post {
+                always {
+                    // Archive security report
+                    archiveArtifacts artifacts: 'safety-report.json', allowEmptyArchive: true
+                }
+            }
+        }
+        
+        stage('Deploy') {
+            when {
+                branch 'main'  // Only deploy from main branch
+            }
+            steps {
+                script {
+                    // Deploy to production
+                    echo "Deploying to ${DEPLOY_ENV} environment..."
+                    
+                    // Here you would add your deployment logic
+                    // Examples:
+                    // - Deploy to AWS S3
+                    // - Deploy to Docker container
+                    // - Deploy to Kubernetes
+                    // - Deploy to EC2 instance
+                    
+                    sh '''
+                        . venv/bin/activate
+                        echo "Deployment completed successfully!"
+                        echo "Environment: ${DEPLOY_ENV}"
+                        echo "Build Number: ${BUILD_NUMBER}"
+                        echo "Git Commit: ${GIT_COMMIT}"
+                    '''
+                }
+            }
+        }
     }
     
     post {
@@ -93,11 +139,29 @@ pipeline {
         success {
             // Notify on success (e.g., email, Slack, etc.)
             echo 'Pipeline completed successfully!'
+            
+            // Send success notification
+            script {
+                // Add your notification logic here
+                // Example: Slack notification, email, etc.
+                echo "Build #${BUILD_NUMBER} completed successfully!"
+            }
         }
         
         failure {
             // Notify on failure
             echo 'Pipeline failed!'
+            
+            // Send failure notification
+            script {
+                // Add your notification logic here
+                echo "Build #${BUILD_NUMBER} failed!"
+            }
+        }
+        
+        unstable {
+            // Handle unstable builds
+            echo 'Pipeline is unstable!'
         }
     }
 }
