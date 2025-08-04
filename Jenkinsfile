@@ -58,16 +58,8 @@ pipeline {
                     // Publish test results
                     junit 'test-results.xml'
                     
-                    // Publish coverage report
-                    publishHTML(target: [
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: 'htmlcov',
-                        reportFiles: 'index.html',
-                        reportName: 'Coverage Report',
-                        reportTitles: 'Code Coverage Report'
-                    ])
+                    // Archive coverage report (alternative to HTML publishing)
+                    archiveArtifacts artifacts: 'htmlcov/**/*', allowEmptyArchive: true
                 }
             }
         }
