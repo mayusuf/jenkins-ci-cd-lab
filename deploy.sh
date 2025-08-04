@@ -38,6 +38,12 @@ mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || {
     mkdir -p "$(dirname "$LOG_FILE")"
 }
 
+# Ensure log file is writable
+touch "$LOG_FILE" 2>/dev/null || {
+    LOG_FILE="./deploy.log"
+    touch "$LOG_FILE"
+}
+
 log "Starting deployment process for Ubuntu EC2..."
 
 # Check if we're running as root or with sudo
