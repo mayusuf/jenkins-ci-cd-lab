@@ -31,7 +31,11 @@ warning() {
 }
 
 # Create log directory if it doesn't exist
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "$LOG_FILE")" 2>/dev/null || {
+    # If we can't create the log directory, use a local one
+    LOG_FILE="./deploy.log"
+    mkdir -p "$(dirname "$LOG_FILE")"
+}
 
 log "Starting deployment process..."
 
