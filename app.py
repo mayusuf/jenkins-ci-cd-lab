@@ -4,9 +4,11 @@ Simple Flask web application for the calculator.
 """
 
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 from calculator.operations import add, subtract, multiply, divide
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 @app.route('/')
 def index():
