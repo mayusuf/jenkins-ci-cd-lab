@@ -107,7 +107,7 @@ pipeline {
                     sh '''
                         . venv/bin/activate
                         chmod +x deploy.sh
-                        sudo ./deploy.sh
+                        ./deploy.sh
                         echo "Deployment completed successfully!"
                         echo "Environment: ${DEPLOY_ENV}"
                         echo "Build Number: ${BUILD_NUMBER}"

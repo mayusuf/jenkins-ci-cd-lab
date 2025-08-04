@@ -38,6 +38,10 @@ log "Starting deployment process..."
 # Check if we're running as root or with sudo
 if [[ $EUID -eq 0 ]]; then
     log "Running as root"
+elif command -v sudo >/dev/null 2>&1; then
+    log "Running with sudo"
+    # Re-run the script with sudo
+    exec sudo "$0" "$@"
 else
     error "This script must be run as root or with sudo"
     exit 1
