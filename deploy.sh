@@ -45,8 +45,18 @@ if [[ $EUID -eq 0 ]]; then
     log "Running as root"
 elif command -v sudo >/dev/null 2>&1; then
     log "Running with sudo"
-    # Re-run the script with sudo
-    exec sudo "$0" "$@"
+    # Try to run with sudo, but handle password prompt gracefully
+    if sudo -n true 2>/dev/null; then
+        # Can run sudo without password
+        exec sudo "$0" "$@"
+    else
+        error "Sudo requires password. Please configure Jenkins to run sudo without password:"
+        error "1. SSH into EC2: ssh -i your-key.pem ubuntu@your-ec2-ip"
+        error "2. Run: sudo visudo"
+        error "3. Add line: jenkins ALL=(ALL) NOPASSWD: ALL"
+        error "4. Save and exit"
+        exit 1
+    fi
 else
     error "This script must be run as root or with sudo"
     exit 1
