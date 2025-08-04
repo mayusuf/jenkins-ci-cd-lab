@@ -104,15 +104,11 @@ pipeline {
                     // Deploy to production
                     echo "Deploying to ${DEPLOY_ENV} environment..."
                     
-                    // Here you would add your deployment logic
-                    // Examples:
-                    // - Deploy to AWS S3
-                    // - Deploy to Docker container
-                    // - Deploy to Kubernetes
-                    // - Deploy to EC2 instance
-                    
+                    // Run the deployment script
                     sh '''
                         . venv/bin/activate
+                        chmod +x deploy.sh
+                        sudo ./deploy.sh
                         echo "Deployment completed successfully!"
                         echo "Environment: ${DEPLOY_ENV}"
                         echo "Build Number: ${BUILD_NUMBER}"
