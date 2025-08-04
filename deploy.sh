@@ -66,7 +66,10 @@ mkdir -p "$DEPLOY_DIR"
 
 # Copy application files
 log "Copying application files..."
-cp -r . "$DEPLOY_DIR/"
+cp -r . "$DEPLOY_DIR/" || {
+    error "Failed to copy application files"
+    exit 1
+}
 
 # Set proper permissions
 log "Setting permissions..."
@@ -75,15 +78,27 @@ chmod -R 755 "$DEPLOY_DIR"
 
 # Install Python dependencies
 log "Installing Python dependencies..."
-cd "$DEPLOY_DIR"
-python3 -m venv venv
+cd "$DEPLOY_DIR" || {
+    error "Failed to change to deployment directory"
+    exit 1
+}
+python3 -m venv venv || {
+    error "Failed to create virtual environment"
+    exit 1
+}
 source venv/bin/activate
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirements.txt || {
+    error "Failed to install Python dependencies"
+    exit 1
+}
 
 # Run tests to ensure everything works
 log "Running tests..."
-python -m pytest tests/ -v
+python -m pytest tests/ -v || {
+    error "Tests failed - deployment aborted"
+    exit 1
+}
 
 # Create systemd service file
 log "Creating systemd service..."

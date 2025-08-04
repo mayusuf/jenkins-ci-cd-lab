@@ -96,13 +96,12 @@ pipeline {
         }
         
         stage('Deploy') {
-            when {
-                branch 'main'  // Only deploy from main branch
-            }
             steps {
                 script {
                     // Deploy to production
                     echo "Deploying to ${DEPLOY_ENV} environment..."
+                    echo "Current branch: ${env.BRANCH_NAME}"
+                    echo "Git branch: ${env.GIT_BRANCH}"
                     
                     // Run the deployment script
                     sh '''
