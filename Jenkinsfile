@@ -46,17 +46,17 @@ pipeline {
         
         stage('Test') {
             steps {
-                // Run tests with coverage
+                // Run tests with coverage and JUnit XML
                 sh '''
                     . venv/bin/activate
-                    python -m pytest tests/ --cov=calculator --cov-report=xml --cov-report=html --cov-report=term
+                    python -m pytest tests/ --cov=calculator --cov-report=xml --cov-report=html --cov-report=term --junitxml=test-results.xml
                 '''
             }
             
             post {
                 always {
                     // Publish test results
-                    junit '**/test-results/*.xml'
+                    junit 'test-results.xml'
                     
                     // Publish coverage report
                     publishHTML(target: [
