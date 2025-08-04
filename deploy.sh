@@ -120,7 +120,7 @@ if systemctl is-active --quiet "${APP_NAME}"; then
     
     # Test the application
     log "Testing application..."
-    if curl -f http://localhost:8080 > /dev/null 2>&1; then
+    if curl -f http://localhost:8081 > /dev/null 2>&1; then
         log "Application is responding correctly"
     else
         warning "Application might not be responding correctly"
@@ -137,7 +137,7 @@ cd /opt
 ls -dt ${APP_NAME}-backup* | tail -n +6 | xargs -r rm -rf
 
 log "Deployment completed successfully!"
-log "Application is running on http://localhost:8080"
+log "Application is running on http://localhost:8081"
 log "Service status: $(systemctl is-active ${APP_NAME})"
 
 # Optional: Send notification
