@@ -1,12 +1,13 @@
-"""
+""""
 Unit tests for calculator operations.
 """
 import pytest
 from calculator.operations import add, subtract, multiply, divide
 
+
 class TestCalculatorOperations:
     """Test cases for calculator operations."""
-    
+
     def test_add(self):
         """Test addition operation."""
         assert add(2, 3) == 5
